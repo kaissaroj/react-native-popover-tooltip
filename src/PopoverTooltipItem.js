@@ -26,7 +26,6 @@ class PopoverTooltipItem extends React.PureComponent<Props> {
     onPressUserCallback: PropTypes.func.isRequired,
     label: labelPropType.isRequired,
     containerStyle: ViewPropTypes.style,
-    labelStyle: Text.propTypes.style,
   };
   static defaultProps = {
     labelStyle: null,

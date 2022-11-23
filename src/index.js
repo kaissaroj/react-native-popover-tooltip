@@ -80,7 +80,6 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     tooltipContainerStyle: ViewPropTypes.style,
     labelContainerStyle: ViewPropTypes.style,
     labelSeparatorColor: PropTypes.string,
-    labelStyle: Text.propTypes.style,
     setBelow: PropTypes.bool,
     animationType: PropTypes.oneOf(["timing", "spring"]),
     onRequestClose: PropTypes.func,
