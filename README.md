@@ -2,12 +2,14 @@
 
 Currently works only with `iOS` and `Android`.
 
+Issue of ViewPropTypes depreciated issue resolved in this 
+
 This component is modified from another project [react-native-tooltip-menu](https://github.com/alimek/react-native-tooltip-menu)
 
-# How to install
+# How to install : add this to package.json
 
 ```bash
-npm install react-native-popover-tooltip --save
+ "react-native-popover-tooltip": "git+https://github.com/kaissaroj/react-native-popover-tooltip",
 ```
 
 To use the component, import the component as shown below
