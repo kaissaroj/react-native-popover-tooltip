@@ -1,10 +1,8 @@
 // @flow
 
-import type {
-  StyleObj,
-} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import type { StyleObj } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   View,
   Modal,
@@ -14,15 +12,17 @@ import {
   Dimensions,
   Text,
   Easing,
-  ViewPropTypes,
-} from 'react-native';
-import PropTypes from 'prop-types';
-import invariant from 'invariant';
+} from "react-native";
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
+import PropTypes from "prop-types";
+import invariant from "invariant";
 
-import PopoverTooltipItem, { type Label, labelPropType }
-  from './PopoverTooltipItem';
+import PopoverTooltipItem, {
+  type Label,
+  labelPropType,
+} from "./PopoverTooltipItem";
 
-const window = Dimensions.get('window');
+const window = Dimensions.get("window");
 
 type Props = {
   buttonComponent: React.Node,
@@ -34,7 +34,7 @@ type Props = {
   labelContainerStyle?: StyleObj,
   labelSeparatorColor: string,
   labelStyle?: StyleObj,
-  setBelow: bool,
+  setBelow: boolean,
   animationType?: "timing" | "spring",
   onRequestClose: () => void,
   triangleOffset: number,
@@ -48,7 +48,7 @@ type Props = {
   opacityChangeDuration?: number,
 };
 type State = {
-  isModalOpen: bool,
+  isModalOpen: boolean,
   x: number,
   y: number,
   width: number,
@@ -56,24 +56,25 @@ type State = {
   opacity: Animated.Value,
   tooltipContainerScale: Animated.Value,
   buttonComponentContainerScale: number | Animated.Interpolation,
-  tooltipTriangleDown: bool,
+  tooltipTriangleDown: boolean,
   tooltipTriangleLeftMargin: number,
   triangleOffset: number,
-  willPopUp: bool,
+  willPopUp: boolean,
   oppositeOpacity: ?Animated.Interpolation,
   tooltipContainerX: ?Animated.Interpolation,
   tooltipContainerY: ?Animated.Interpolation,
   buttonComponentOpacity: number,
 };
 class PopoverTooltip extends React.PureComponent<Props, State> {
-
   static propTypes = {
     buttonComponent: PropTypes.node.isRequired,
     buttonComponentExpandRatio: PropTypes.number,
-    items: PropTypes.arrayOf(PropTypes.shape({
-      label: labelPropType.isRequired,
-      onPress: PropTypes.func.isRequired,
-    })).isRequired,
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: labelPropType.isRequired,
+        onPress: PropTypes.func.isRequired,
+      })
+    ).isRequired,
     componentWrapperStyle: ViewPropTypes.style,
     overlayStyle: ViewPropTypes.style,
     tooltipContainerStyle: ViewPropTypes.style,
@@ -81,7 +82,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     labelSeparatorColor: PropTypes.string,
     labelStyle: Text.propTypes.style,
     setBelow: PropTypes.bool,
-    animationType: PropTypes.oneOf([ "timing", "spring" ]),
+    animationType: PropTypes.oneOf(["timing", "spring"]),
     onRequestClose: PropTypes.func,
     triangleOffset: PropTypes.number,
     delayLongPress: PropTypes.number,
@@ -135,28 +136,28 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
 
   toggleModal = () => {
     this.setState({ isModalOpen: !this.state.isModalOpen });
-  }
+  };
 
   openModal = () => {
     this.setState({ willPopUp: true });
     this.toggleModal();
     this.props.onOpenTooltipMenu && this.props.onOpenTooltipMenu();
-  }
+  };
 
   hideModal = () => {
     this.setState({ willPopUp: false });
     this.showZoomingOutAnimation();
     this.props.onCloseTooltipMenu && this.props.onCloseTooltipMenu();
-  }
+  };
 
   onPressItem = (userCallback: () => void) => {
     this.toggle();
     userCallback();
-  }
+  };
 
-  onInnerContainerLayout = (
-    event: { nativeEvent: { layout: { height: number, width: number } } },
-  ) => {
+  onInnerContainerLayout = (event: {
+    nativeEvent: { layout: { height: number, width: number } },
+  }) => {
     const tooltipContainerWidth = event.nativeEvent.layout.width;
     const tooltipContainerHeight = event.nativeEvent.layout.height;
     if (
@@ -170,11 +171,12 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     const componentWrapper = this.wrapperComponent;
     invariant(componentWrapper, "should be set");
     componentWrapper.measure((x, y, width, height, pageX, pageY) => {
-      const fullWidth = pageX + tooltipContainerWidth
-        + (width - tooltipContainerWidth) / 2;
-      const tooltipContainerX_final = fullWidth > window.width
-        ? window.width - tooltipContainerWidth
-        : pageX + (width - tooltipContainerWidth) / 2;
+      const fullWidth =
+        pageX + tooltipContainerWidth + (width - tooltipContainerWidth) / 2;
+      const tooltipContainerX_final =
+        fullWidth > window.width
+          ? window.width - tooltipContainerWidth
+          : pageX + (width - tooltipContainerWidth) / 2;
       let tooltipContainerY_final = this.state.tooltipTriangleDown
         ? pageY - tooltipContainerHeight - 20
         : pageY + tooltipContainerHeight - 20;
@@ -218,23 +220,21 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
           buttonComponentContainerScale,
           buttonComponentOpacity: 1,
         },
-        this.showZoomingInAnimation,
+        this.showZoomingInAnimation
       );
     });
     this.setState({ willPopUp: false });
-  }
+  };
 
   render() {
     const tooltipContainerStyle = {
       left: this.state.tooltipContainerX,
       top: this.state.tooltipContainerY,
-      transform: [
-        { scale: this.state.tooltipContainerScale },
-      ],
+      transform: [{ scale: this.state.tooltipContainerScale }],
     };
 
     const items = this.props.items.map((item, index) => {
-      const classes = [ this.props.labelContainerStyle ];
+      const classes = [this.props.labelContainerStyle];
 
       if (index !== this.props.items.length - 1) {
         classes.push([
@@ -264,25 +264,29 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     let triangleUp = null;
     if (this.state.tooltipTriangleDown) {
       triangleDown = (
-        <View style={[
-          styles.triangleDown,
-          {
-            marginLeft: this.state.tooltipTriangleLeftMargin,
-            left: this.state.triangleOffset,
-          },
-          borderStyle,
-        ]} />
+        <View
+          style={[
+            styles.triangleDown,
+            {
+              marginLeft: this.state.tooltipTriangleLeftMargin,
+              left: this.state.triangleOffset,
+            },
+            borderStyle,
+          ]}
+        />
       );
     } else {
       triangleUp = (
-        <View style={[
-          styles.triangleUp,
-          {
-            marginLeft: this.state.tooltipTriangleLeftMargin,
-            left: this.state.triangleOffset,
-          },
-          borderStyle,
-        ]} />
+        <View
+          style={[
+            styles.triangleUp,
+            {
+              marginLeft: this.state.tooltipTriangleLeftMargin,
+              left: this.state.triangleOffset,
+            },
+            borderStyle,
+          ]}
+        />
       );
     }
 
@@ -295,10 +299,12 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         delayLongPress={this.props.delayLongPress}
         activeOpacity={1.0}
       >
-        <Animated.View style={[
-          { opacity: this.state.oppositeOpacity },
-          this.props.componentContainerStyle,
-        ]}>
+        <Animated.View
+          style={[
+            { opacity: this.state.oppositeOpacity },
+            this.props.componentContainerStyle,
+          ]}
+        >
           {this.props.buttonComponent}
         </Animated.View>
         <Modal
@@ -306,11 +312,13 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
           onRequestClose={this.props.onRequestClose}
           transparent
         >
-          <Animated.View style={[
-            styles.overlay,
-            this.props.overlayStyle,
-            { opacity: this.state.opacity },
-          ]}>
+          <Animated.View
+            style={[
+              styles.overlay,
+              this.props.overlayStyle,
+              { opacity: this.state.opacity },
+            ]}
+          >
             <TouchableOpacity
               activeOpacity={1}
               focusedOpacity={1}
@@ -329,10 +337,12 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
                   style={styles.innerContainer}
                 >
                   {triangleUp}
-                  <View style={[
-                    styles.allItemContainer,
-                    this.props.tooltipContainerStyle,
-                  ]}>
+                  <View
+                    style={[
+                      styles.allItemContainer,
+                      this.props.tooltipContainerStyle,
+                    ]}
+                  >
                     {items}
                   </View>
                   {triangleDown}
@@ -340,24 +350,21 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
               </Animated.View>
             </TouchableOpacity>
           </Animated.View>
-          <Animated.View style={{
-            position: 'absolute',
-            left: this.state.x,
-            top: this.state.y,
-            width: this.state.width,
-            height: this.state.height,
-            backgroundColor: 'transparent',
-            opacity: this.state.buttonComponentOpacity, // At the first frame, the button will be rendered
-                                                        // in the top-left corner. So we dont render it
-                                                        // until its position has been calculated.
-            transform: [
-              { scale: this.state.buttonComponentContainerScale },
-            ],
-          }}>
-            <TouchableOpacity
-              onPress={this.toggle}
-              activeOpacity={1.0}
-            >
+          <Animated.View
+            style={{
+              position: "absolute",
+              left: this.state.x,
+              top: this.state.y,
+              width: this.state.width,
+              height: this.state.height,
+              backgroundColor: "transparent",
+              opacity: this.state.buttonComponentOpacity, // At the first frame, the button will be rendered
+              // in the top-left corner. So we dont render it
+              // until its position has been calculated.
+              transform: [{ scale: this.state.buttonComponentContainerScale }],
+            }}
+          >
+            <TouchableOpacity onPress={this.toggle} activeOpacity={1.0}>
               {this.props.buttonComponent}
             </TouchableOpacity>
           </Animated.View>
@@ -368,66 +375,54 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
 
   wrapperRef = (wrapperComponent: ?TouchableOpacity) => {
     this.wrapperComponent = wrapperComponent;
-  }
+  };
 
   showZoomingInAnimation = () => {
-    let tooltipAnimation = Animated.timing(
-      this.state.tooltipContainerScale,
-      {
-        toValue: 1,
-        duration: this.props.timingConfig && this.props.timingConfig.duration
+    let tooltipAnimation = Animated.timing(this.state.tooltipContainerScale, {
+      toValue: 1,
+      duration:
+        this.props.timingConfig && this.props.timingConfig.duration
           ? this.props.timingConfig.duration
           : 200,
-      }
-    );
-    if (this.props.animationType == 'spring') {
-      tooltipAnimation = Animated.spring(
-        this.state.tooltipContainerScale,
-        {
-          toValue: 1,
-          tension: this.props.springConfig && this.props.springConfig.tension
+    });
+    if (this.props.animationType == "spring") {
+      tooltipAnimation = Animated.spring(this.state.tooltipContainerScale, {
+        toValue: 1,
+        tension:
+          this.props.springConfig && this.props.springConfig.tension
             ? this.props.springConfig.tension
             : 100,
-          friction: this.props.springConfig && this.props.springConfig.friction
+        friction:
+          this.props.springConfig && this.props.springConfig.friction
             ? this.props.springConfig.friction
             : 7,
-        },
-      );
+      });
     }
     Animated.parallel([
       tooltipAnimation,
-      Animated.timing(
-        this.state.opacity,
-        {
-          toValue: 1,
-          duration: this.props.opacityChangeDuration
-            ? this.props.opacityChangeDuration
-            : 200,
-        },
-      ),
+      Animated.timing(this.state.opacity, {
+        toValue: 1,
+        duration: this.props.opacityChangeDuration
+          ? this.props.opacityChangeDuration
+          : 200,
+      }),
     ]).start();
-  }
+  };
 
   showZoomingOutAnimation() {
     Animated.parallel([
-      Animated.timing(
-        this.state.tooltipContainerScale,
-        {
-          toValue: 0,
-          duration: this.props.opacityChangeDuration
-            ? this.props.opacityChangeDuration
-            : 200,
-        },
-      ),
-      Animated.timing(
-        this.state.opacity,
-        {
-          toValue: 0,
-          duration: this.props.opacityChangeDuration
-            ? this.props.opacityChangeDuration
-            : 200,
-        },
-      ),
+      Animated.timing(this.state.tooltipContainerScale, {
+        toValue: 0,
+        duration: this.props.opacityChangeDuration
+          ? this.props.opacityChangeDuration
+          : 200,
+      }),
+      Animated.timing(this.state.opacity, {
+        toValue: 0,
+        duration: this.props.opacityChangeDuration
+          ? this.props.opacityChangeDuration
+          : 200,
+      }),
     ]).start(this.toggleModal);
   }
 
@@ -437,62 +432,61 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     } else {
       this.openModal();
     }
-  }
-
+  };
 }
 
 const styles = StyleSheet.create({
   overlay: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: "rgba(0,0,0,0.5)",
     flex: 1,
   },
   innerContainer: {
-    backgroundColor: 'transparent',
-    alignItems: 'flex-start'
+    backgroundColor: "transparent",
+    alignItems: "flex-start",
   },
   tooltipMargin: {
     borderBottomWidth: 1,
   },
   tooltipContainer: {
-    backgroundColor: 'transparent',
-    position: 'absolute',
+    backgroundColor: "transparent",
+    position: "absolute",
   },
   triangleDown: {
     width: 10,
     height: 10,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
+    backgroundColor: "transparent",
+    borderStyle: "solid",
     borderTopWidth: 10,
     borderRightWidth: 10,
     borderBottomWidth: 0,
     borderLeftWidth: 10,
-    borderTopColor: 'white',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderLeftColor: 'transparent',
+    borderTopColor: "white",
+    borderRightColor: "transparent",
+    borderBottomColor: "transparent",
+    borderLeftColor: "transparent",
   },
   triangleUp: {
     width: 10,
     height: 10,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
+    backgroundColor: "transparent",
+    borderStyle: "solid",
     borderTopWidth: 0,
     borderRightWidth: 10,
     borderBottomWidth: 10,
     borderLeftWidth: 10,
-    borderBottomColor: 'white',
-    borderTopColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderLeftColor: 'transparent',
+    borderBottomColor: "white",
+    borderTopColor: "transparent",
+    borderRightColor: "transparent",
+    borderLeftColor: "transparent",
   },
   button: {
     flex: 1,
   },
   allItemContainer: {
     borderRadius: 5,
-    backgroundColor: 'white',
-    alignSelf: 'stretch',
-    overflow: 'hidden',
+    backgroundColor: "white",
+    alignSelf: "stretch",
+    overflow: "hidden",
   },
 });
 

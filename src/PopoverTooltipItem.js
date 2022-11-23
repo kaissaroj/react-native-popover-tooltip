@@ -1,20 +1,13 @@
 // @flow
 
-import type {
-  StyleObj,
-} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+import type { StyleObj } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
-import * as React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-  ViewPropTypes,
-} from 'react-native';
-import PropTypes from 'prop-types';
+import * as React from "react";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { ViewPropTypes } from "deprecated-react-native-prop-types";
+import PropTypes from "prop-types";
 
-export type Label = string | () => React.Node;
+export type Label = string | (() => React.Node);
 export const labelPropType = PropTypes.oneOfType([
   PropTypes.string,
   PropTypes.func,
@@ -28,7 +21,6 @@ type Props = {
   labelStyle: ?StyleObj,
 };
 class PopoverTooltipItem extends React.PureComponent<Props> {
-
   static propTypes = {
     onPress: PropTypes.func.isRequired,
     onPressUserCallback: PropTypes.func.isRequired,
@@ -42,22 +34,22 @@ class PopoverTooltipItem extends React.PureComponent<Props> {
   };
 
   render() {
-    const label = typeof this.props.label === 'string'
-      ? <Text style={this.props.labelStyle}>{this.props.label}</Text>
-      : this.props.label();
+    const label =
+      typeof this.props.label === "string" ? (
+        <Text style={this.props.labelStyle}>{this.props.label}</Text>
+      ) : (
+        this.props.label()
+      );
     return (
       <View style={[styles.itemContainer, this.props.containerStyle]}>
-        <TouchableOpacity onPress={this.onPress}>
-          {label}
-        </TouchableOpacity>
+        <TouchableOpacity onPress={this.onPress}>{label}</TouchableOpacity>
       </View>
     );
   }
 
   onPress = () => {
     this.props.onPress(this.props.onPressUserCallback);
-  }
-
+  };
 }
 
 const styles = StyleSheet.create({
